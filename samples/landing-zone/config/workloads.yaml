@@ -1,0 +1,45 @@
+security_groups:
+  alb:
+    description: Public load balancer
+    ingress:
+      - { port: 443, cidr: 0.0.0.0/0 }
+      - { port: 80, cidr: 0.0.0.0/0 }
+  app:
+    description: Application servers
+    ingress:
+      - { port: 8080, source_sg: alb }
+  bastion:
+    description: SSM-only bastion, no inbound
+    ingress: []
+  db:
+    description: Database tier
+    ingress:
+      - { port: 5432, source_sg: app }
+
+apps:
+  dev:
+    api:
+      instance_type: t3.small
+      count: 1
+      subnet_tier: private
+      security_groups: [app]
+      dns_name: api
+    bastion:
+      instance_type: t3.micro
+      count: 1
+      subnet_tier: private
+      security_groups: [bastion]
+      dns_name: bastion
+  prod:
+    api:
+      instance_type: m6i.large
+      count: 3
+      subnet_tier: private
+      security_groups: [app]
+      dns_name: api
+    worker:
+      instance_type: c6i.large
+      count: 2
+      subnet_tier: private
+      security_groups: [app]
+      dns_name: worker

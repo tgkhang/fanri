@@ -1,0 +1,19 @@
+dev:
+  vpc_cidr: 10.10.0.0/16
+  azs: [ap-southeast-1a, ap-southeast-1b]
+  single_nat_gateway: true
+  subnets:
+    public:  [10.10.0.0/24, 10.10.1.0/24]
+    private: [10.10.10.0/24, 10.10.11.0/24]
+    data:    [10.10.20.0/24, 10.10.21.0/24]
+  private_zone: dev.internal.example.com
+
+prod:
+  vpc_cidr: 10.20.0.0/16
+  azs: [ap-southeast-1a, ap-southeast-1b, ap-southeast-1c]
+  single_nat_gateway: false
+  subnets:
+    public:  [10.20.0.0/24, 10.20.1.0/24, 10.20.2.0/24]
+    private: [10.20.10.0/24, 10.20.11.0/24, 10.20.12.0/24]
+    data:    [10.20.20.0/24, 10.20.21.0/24, 10.20.22.0/24]
+  private_zone: prod.internal.example.com

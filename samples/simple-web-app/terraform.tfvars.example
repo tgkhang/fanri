@@ -1,0 +1,5 @@
+region         = "ap-southeast-1"
+environment    = "dev"
+instance_count = 2
+domain_name    = "example.com"
+admin_cidrs    = ["203.0.113.10/32"]
