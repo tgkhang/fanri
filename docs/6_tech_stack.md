@@ -11,7 +11,7 @@
 | --- | --- | --- |
 | Language | **TypeScript** (strict) everywhere | Go for the parser only, compiled to WASM (see §6.3) |
 | Runtime | **Node.js LTS (≥ 22)** | Bun (faster startup, single-binary compile) |
-| Monorepo | **pnpm workspaces** + Turborepo | Nx |
+| Monorepo | **npm workspaces** + Turborepo | pnpm, Nx |
 | HCL parsing | **`@cdktf/hcl2json`** for the spike → **own WASM build of `hashicorp/hcl`** as the long-term parser | tree-sitter-hcl, Go core |
 | IR schema | **Zod** (runtime validation + TS types + JSON Schema export) | TypeBox |
 | CLI | **commander** (or citty) + **open** (open browser) | oclif (heavier) |
@@ -76,25 +76,29 @@
 - **Plan:** core ships **generic category icons** (own or MIT-licensed, e.g. Lucide). Each cloud plugin optionally provides vendor icons **only if the terms allow redistribution**. Otherwise a `fanri icons install aws` command downloads them to the user's machine from the vendor site (an explicit, opt-in network action).
 - Verify each vendor's terms before P1 release (doc 2 §2.7).
 
-## 6.7 Repository layout (proposal)
+## 6.7 Repository layout
 
-```
+```text
 fanri/
+├── apps/
+│   ├── server/          # BE: `fanri` CLI + Express local API (feature modules in src/features)
+│   └── web/             # FE: Vite + React + React Flow (feature modules in src/features)
 ├── packages/
-│   ├── core/            # IR schema (zod), graph builder, module resolver, plugin host
+│   ├── core/            # IR schema (zod), loader, resolver, graph builder, plugin host
 │   ├── parser-hcl/      # Parser interface + hcl2json adapter (→ hcl-wasm later)
 │   ├── hcl-wasm/        # (P3) Go + hashicorp/hcl/v2 → WASM
-│   ├── cli/             # `fanri` command, local server (Express), exporters
-│   ├── web/             # Vite + React + React Flow + ELK worker
-│   ├── plugin-aws/      # mappings (JSON/YAML), containment rules, schema snapshot
+│   ├── plugin-aws/      # mappings, containment rules, schema snapshot
 │   ├── plugin-azure/    # (P4)
 │   ├── plugin-gcp/      # (P4)
-│   ├── plugin-template/ # starter for community providers
-│   └── ai/              # (P6, optional) aiProvider + adapters. Core never imports it, so the no-AI build ships without it
-├── fixtures/            # sample TF repos (aws-basic, aws-central-module, azure-rg, ...)
-├── docs/                # these documents + user/contributor docs
-└── .github/workflows/   # lint, test, snapshot, release
+│   ├── plugin-template/ # (P4) starter for community providers
+│   └── ai/              # (P6, optional) aiProvider + adapters. Core never imports it
+├── fixtures/            # tiny TF inputs for automated tests
+├── samples/             # realistic TF for manual testing (simple-web-app, landing-zone, private/ gitignored)
+├── docs/                # these documents
+└── .github/             # PR template, workflows later
 ```
+
+Details and how to add a feature: `HOW_TO_RUN.md` §6–7.
 
 ## 6.8 Security & privacy implementation notes
 
@@ -105,7 +109,7 @@ fanri/
 | Secrets in HCL | Mask sensitive attributes in the IR before sending to the UI (FR-6.6). Never log attribute values |
 | Tier-2 fetch / shell | Only on explicit user action. Show the exact command. Use the user's existing git/terraform credentials, never store them |
 | AI plugin | Off by default. Sends **IR excerpts**, not raw files. A preview of the payload before the first send. Local Ollama recommended. CLI adapters run the user's installed CLI with the prompt on stdin, and fanri stores no keys for them. Company repos only allow providers on an allow-list |
-| Supply chain | Lockfile, `pnpm audit` in CI, minimal dependencies in `core`, signed releases (npm provenance) |
+| Supply chain | Lockfile, `npm audit` in CI, minimal dependencies in `core`, signed releases (npm provenance) |
 
 ## 6.9 Testing strategy
 
@@ -120,7 +124,7 @@ fanri/
 
 ## 6.10 Tooling for the author's workflow (Windows)
 
-- Node LTS via **fnm** or **Volta**. pnpm through Corepack.
+- Node LTS via **fnm** or **Volta**. npm (bundled with Node). See `HOW_TO_RUN.md`.
 - Go toolchain only needed from P3 (hcl-wasm).
 - Terraform CLI **optional**: only to generate schema snapshots and for Tier-2 actions.
 - VS Code + ESLint/Prettier/Biome extensions. `fanri` also runs in WSL.
