@@ -1,0 +1,38 @@
+organization:
+  feature_set: ALL
+  management_account_id: "111111111111"
+
+organizational_units:
+  - name: Security
+    accounts:
+      - name: log-archive
+        email: aws+log-archive@example.com
+      - name: audit
+        email: aws+audit@example.com
+  - name: Infrastructure
+    accounts:
+      - name: shared-network
+        email: aws+network@example.com
+  - name: Workloads
+    children: [NonProd, Prod]
+  - name: NonProd
+    parent: Workloads
+    accounts:
+      - name: app-dev
+        email: aws+app-dev@example.com
+  - name: Prod
+    parent: Workloads
+    accounts:
+      - name: app-prod
+        email: aws+app-prod@example.com
+  - name: Sandbox
+    accounts: []
+
+service_control_policies:
+  deny-leave-org:
+    targets: [Workloads, Sandbox]
+  deny-root-user:
+    targets: [Workloads]
+  region-restriction:
+    targets: [Workloads, Sandbox]
+    allowed_regions: [ap-southeast-1, us-east-1]

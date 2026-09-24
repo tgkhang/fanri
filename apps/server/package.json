@@ -1,0 +1,30 @@
+{
+  "name": "fanri",
+  "version": "0.0.0",
+  "private": true,
+  "description": "See your Terraform. Local-first infrastructure diagrams.",
+  "type": "module",
+  "bin": {
+    "fanri": "./dist/main.js"
+  },
+  "scripts": {
+    "dev": "node --watch --import tsx src/main.ts ../../fixtures/aws-basic --port 4321 --dev",
+    "build": "tsup && node scripts/copy-web.mjs",
+    "start": "node dist/main.js",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@fanri/core": "*",
+    "@fanri/parser-hcl": "*",
+    "@fanri/plugin-aws": "*",
+    "commander": "^15.0.0",
+    "express": "^5.2.1",
+    "open": "^11.0.4",
+    "ws": "^8.21.3"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/ws": "^8.18.1",
+    "tsup": "^8.5.1"
+  }
+}

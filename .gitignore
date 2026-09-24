@@ -1,0 +1,61 @@
+# ── Dependencies ─────────────────────────────
+node_modules/
+
+
+# ── Build output / caches ────────────────────
+dist/
+build/
+out/
+.turbo/
+*.tsbuildinfo
+.vite/
+.cache/
+
+# ── Tests ────────────────────────────────────
+coverage/
+playwright-report/
+test-results/
+__snapshots__/*.snap.tmp
+
+# ── Env / secrets ────────────────────────────
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# ── Logs ─────────────────────────────────────
+*.log
+npm-debug.log*
+
+logs/
+
+# ── Terraform (fixtures & real repos run locally) ─
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+# never commit company repos used for manual testing
+samples/private/*
+!samples/private/README.md
+
+# ── fanri local data ─────────────────────────
+.fanri/
+
+# ── Go / WASM (packages/hcl-wasm, P3) ────────
+*.wasm
+!packages/**/testdata/*.wasm
+
+# ── OS / editors ─────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+*.swp
+.vscode
+/note
